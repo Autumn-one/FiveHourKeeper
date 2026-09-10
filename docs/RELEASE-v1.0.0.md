@@ -14,11 +14,29 @@ FiveHourKeeper 会在**你指定的刷新时刻自动往前倒推 5 小时**，�
 
 | 文件 | 说明 |
 | --- | --- |
-| `FiveHourKeeper-1.0.0-win-x64.exe` | **推荐**。自包含单文件，无需安装 .NET 运行时，双击即用 |
+| `FiveHourKeeper-1.0.0-win-x64.exe` | 单文件程序，约 2.5 MB，双击即用 |
 
 - 系统要求：Windows 10 / 11（x64）
-- 文件大小：约 61 MB（已开启单文件压缩；内含 .NET 运行时，无需额外安装）
-- SHA256：`8cc5024906d9e484c02ec0c39c8dff7145ccad4f231a973eb0ae2182429a0858`
+- 文件大小：约 2.5 MB
+- SHA256：`d6fffb305b0d578d98b92559c746912481e75f7dad23134995f2a47564119934`
+
+### 第一次使用前：装一次 .NET 桌面运行时
+
+本程序基于 .NET 10 + WPF 构建，**没有把运行时打包进程序里**（所以只有 2.5 MB）。
+使用前需要安装一次 **.NET Desktop Runtime 10（x64）**，约 55 MB，装一次就行，
+以后所有基于 .NET 10 的程序都能共用。
+
+**方式一 · 一条命令**（推荐，Win10 1809 以上系统自带 winget）：
+
+```
+winget install Microsoft.DotNet.DesktopRuntime.10
+```
+
+**方式二 · 官网下载**
+<https://dotnet.microsoft.com/download/dotnet/10.0>
+打开后选 **Desktop Runtime → x64**，下载安装包双击安装。
+
+> 没装运行时直接打开程序，Windows 会提示缺少 .NET 运行时 —— 按上面两种方式装好再打开即可。
 
 ## 主要功能
 
