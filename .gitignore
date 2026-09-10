@@ -1,0 +1,20 @@
+# 构建产物
+bin/
+obj/
+*.user
+*.suo
+
+# 本地 NuGet 缓存（NuGet.config 重定向的 globalPackagesFolder）
+.nuget-packages/
+
+# 工作区助手数据（.workbuddy）
+.workbuddy/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# 系统文件
+Thumbs.db
+Desktop.ini

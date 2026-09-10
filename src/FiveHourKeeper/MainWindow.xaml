@@ -1,0 +1,116 @@
+﻿<Window x:Class="FiveHourKeeper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:FiveHourKeeper.ViewModels"
+        Title="五小时窗口管家"
+        Height="680" Width="1160" MinHeight="560" MinWidth="980"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgBrush}">
+    <Window.Resources>
+        <!-- 导航按钮基础样式 -->
+        <Style x:Key="NavButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="12,9" />
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{StaticResource InkBrush}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource HoverBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!-- 激活态：DataTrigger.Value 必须是常量，不能是 Binding，故每页一个派生样式 -->
+        <Style x:Key="NavDashboard" TargetType="Button" BasedOn="{StaticResource NavButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CurrentPageName}" Value="仪表盘">
+                    <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+                    <Setter Property="Foreground" Value="White" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="NavModels" TargetType="Button" BasedOn="{StaticResource NavButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CurrentPageName}" Value="模型">
+                    <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+                    <Setter Property="Foreground" Value="White" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="NavSettings" TargetType="Button" BasedOn="{StaticResource NavButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CurrentPageName}" Value="设置">
+                    <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+                    <Setter Property="Foreground" Value="White" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="NavLogs" TargetType="Button" BasedOn="{StaticResource NavButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CurrentPageName}" Value="日志">
+                    <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+                    <Setter Property="Foreground" Value="White" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+            <DockPanel Margin="16,20">
+                <!-- 顶部品牌区 -->
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,24">
+                    <Border Width="36" Height="36" CornerRadius="9" Background="{StaticResource PrimaryBrush}">
+                        <TextBlock Text="5h" Foreground="White" FontWeight="500" FontSize="14"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="五小时窗口管家" FontSize="13" FontWeight="500" Foreground="{StaticResource InkBrush}" />
+                        <TextBlock Text="FiveHourKeeper" FontSize="11" Foreground="{StaticResource SubtleBrush}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- 底部状态区 -->
+                <Border DockPanel.Dock="Bottom" Padding="12" Background="{StaticResource PrimaryLightBrush}"
+                        CornerRadius="10" Margin="0,12,0,0">
+                    <StackPanel>
+                        <TextBlock Text="调度状态" FontSize="12" FontWeight="500" Foreground="{StaticResource PrimaryDarkBrush}" />
+                        <TextBlock Text="{Binding StatusText}" FontSize="13" Foreground="{StaticResource PrimaryDarkBrush}" Margin="0,4,0,0" />
+                        <Button Style="{StaticResource SecondaryButton}"
+                                Margin="0,8,0,0" Padding="0,5"
+                                Content="{Binding PauseButtonText}"
+                                Command="{Binding TogglePauseCommand}" />
+                    </StackPanel>
+                </Border>
+
+                <!-- 导航 -->
+                <StackPanel>
+                    <Button Style="{StaticResource NavDashboard}" Content="仪表盘" Click="OnNav" />
+                    <Button Style="{StaticResource NavModels}" Content="模型" Click="OnNav" />
+                    <Button Style="{StaticResource NavSettings}" Content="设置" Click="OnNav" />
+                    <Button Style="{StaticResource NavLogs}" Content="日志" Click="OnNav" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" Margin="24,20" />
+    </Grid>
+</Window>

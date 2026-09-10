@@ -1,0 +1,166 @@
+<Window x:Class="FiveHourKeeper.Views.ModelEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:FiveHourKeeper.ViewModels"
+        xmlns:m="clr-namespace:FiveHourKeeper.Models"
+        Title="编辑模型"
+        Width="680" Height="760" MinHeight="600"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        Background="{StaticResource BgBrush}">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel DataContext="{Binding ViewModel}" Margin="0,0,4,0">
+
+                <!-- ===== 基础信息 ===== -->
+                <TextBlock Text="基础信息" FontSize="15" FontWeight="500" Foreground="{StaticResource InkBrush}" />
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="模型别名" />
+                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Style="{StaticResource ErrorHintStyle}" Text="{Binding NameError}" Margin="0,2,0,0" />
+
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="协议" />
+                <ComboBox SelectedItem="{Binding Protocol}">
+                    <m:AiProtocol>OpenAiCompatible</m:AiProtocol>
+                    <m:AiProtocol>AnthropicCompatible</m:AiProtocol>
+                </ComboBox>
+                <TextBlock Style="{StaticResource HintStyle}" Text="OpenAI 兼容：/v1/chat/completions + Bearer；Anthropic 兼容：/v1/messages + x-api-key。" Margin="0,4,0,0" />
+
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Base URL" />
+                <TextBox Text="{Binding BaseUrl, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Style="{StaticResource ErrorHintStyle}" Text="{Binding BaseUrlError}" Margin="0,2,0,0" />
+                <TextBlock Style="{StaticResource HintStyle}" Text="示例：https://api.deepseek.com 或 https://api.anthropic.com；带不带 /v1 均可。" Margin="0,4,0,0" />
+
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="API Key" />
+                <PasswordBox x:Name="ApiKeyBox" />
+                <TextBlock Style="{StaticResource ErrorHintStyle}" Text="{Binding ApiKeyError}" Margin="0,2,0,0" />
+
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="模型名称" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Column="0" IsEditable="True" StaysOpenOnEdit="True"
+                              Text="{Binding ModelName, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding FetchedModels}" />
+                    <Button Grid.Column="1" Margin="10,0,0,0"
+                            Style="{StaticResource SecondaryButton}" Content="拉取支持模型"
+                            Command="{Binding FetchModelsCommand}"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}" />
+                </Grid>
+                <TextBlock Style="{StaticResource ErrorHintStyle}" Text="{Binding ModelNameError}" Margin="0,2,0,0" />
+                <TextBlock Style="{StaticResource HintStyle}" Text="需要 Base URL 与 API Key 均已填写；拉取结果会随配置保存，供下次直接下拉选择。" Margin="0,4,0,0" />
+
+                <Grid Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="max_tokens" />
+                        <TextBox Text="{Binding MaxTokens, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="8,0,8,0">
+                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="最大重试" />
+                        <TextBox Text="{Binding MaxRetries, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Margin="8,0,0,0">
+                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="参与调度" />
+                        <CheckBox IsChecked="{Binding Enabled}" Content="启用此模型" Margin="0,8,0,0" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="提示词覆盖（留空使用全局默认）" />
+                <TextBox AcceptsReturn="True" Height="64" Text="{Binding PromptOverride, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalContentAlignment="Top" />
+
+                <!-- ===== 重置时间 ===== -->
+                <TextBlock Text="重置时间" FontSize="15" FontWeight="500" Foreground="{StaticResource InkBrush}" Margin="0,20,0,4" />
+                <TextBlock Style="{StaticResource HintStyle}" Text="系统在「目标时刻 − 5 小时 + 安全偏移」时自动发送一次真实请求锚定窗口。相邻目标须间隔 ≥ 5 小时。" />
+
+                <ItemsControl ItemsSource="{Binding Schedules}" Margin="0,8,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:ScheduleRowViewModel}">
+                            <Border Margin="0,4" Padding="12" CornerRadius="8"
+                                    Background="{StaticResource SurfaceBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="120" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ComboBox Grid.Column="0" SelectedItem="{Binding Kind, Mode=TwoWay}" Width="110">
+                                            <m:ScheduleKind>Daily</m:ScheduleKind>
+                                            <m:ScheduleKind>OneShot</m:ScheduleKind>
+                                        </ComboBox>
+                                        <CheckBox Grid.Column="1" Content="启用" IsChecked="{Binding Enabled}" Margin="14,0,0,0" />
+                                        <Button Grid.Column="2" Style="{StaticResource RowDangerButton}" Content="删除"
+                                                Command="{Binding DataContext.RemoveScheduleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" />
+                                    </Grid>
+
+                                    <StackPanel Margin="0,10,0,0" Visibility="{Binding IsDaily, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock Style="{StaticResource HintStyle}" Text="每日目标刷新时刻（HH:mm）" />
+                                        <TextBox Width="140" HorizontalAlignment="Left" Margin="0,4,0,0"
+                                                 Text="{Binding TimeText, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+
+                                    <StackPanel Margin="0,10,0,0" Visibility="{Binding IsDaily, Converter={StaticResource InverseBoolToVisibility}}">
+                                        <TextBlock Style="{StaticResource HintStyle}" Text="一次性目标刷新（日期 + 时刻）" />
+                                        <Grid Margin="0,4,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Column="0" Margin="0,0,8,0"
+                                                     Text="{Binding DateText, UpdateSourceTrigger=PropertyChanged}" />
+                                            <TextBox Grid.Column="1" Margin="8,0,0,0"
+                                                     Text="{Binding TimeText, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Style="{StaticResource SecondaryButton}" Content="＋ 添加重置时刻"
+                        Command="{Binding AddScheduleCommand}" Margin="0,6,0,0" HorizontalAlignment="Left" />
+
+                <TextBlock Style="{StaticResource ErrorHintStyle}" Text="{Binding ConflictWarning}" Margin="0,8,0,0" />
+
+                <!-- 状态行 -->
+                <Border Margin="0,14,0,0" Padding="10,8" CornerRadius="6" Background="#FAFAF6"
+                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    <TextBlock FontSize="12" TextWrapping="Wrap"
+                               Foreground="{Binding Status, Converter={StaticResource StatusTone}}"
+                               Text="{Binding Status}" />
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ===== 底部操作 ===== -->
+        <Grid Grid.Row="1" Margin="0,14,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Style="{StaticResource HintStyle}"
+                       Text="测试连通会发送一次真实请求（会锚定窗口）" />
+            <Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="测试连通"
+                    Command="{Binding ViewModel.TestConnectionCommand}"
+                    IsEnabled="{Binding ViewModel.IsBusy, Converter={StaticResource InverseBool}}" Margin="0,0,8,0" />
+            <Button Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="取消" Click="OnCancel" Margin="0,0,8,0" />
+            <Button Grid.Column="3" Style="{StaticResource PrimaryButton}" Content="保存" Click="OnSave" />
+        </Grid>
+    </Grid>
+</Window>

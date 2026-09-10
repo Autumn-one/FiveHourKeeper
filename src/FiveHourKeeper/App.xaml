@@ -1,0 +1,43 @@
+﻿<Application x:Class="FiveHourKeeper.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:FiveHourKeeper"
+             xmlns:vm="clr-namespace:FiveHourKeeper.ViewModels"
+             xmlns:conv="clr-namespace:FiveHourKeeper.Views.Converters"
+             xmlns:views="clr-namespace:FiveHourKeeper.Views"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Views/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:MaskKeyConverter x:Key="MaskKey" />
+            <conv:LocalTimeConverter x:Key="LocalTime" />
+            <conv:BoolToOpacityConverter x:Key="BoolToOpacity" />
+            <conv:NullToBoolConverter x:Key="NullToBool" />
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+            <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility" />
+            <conv:InverseBoolConverter x:Key="InverseBool" />
+            <conv:EnumDisplayConverter x:Key="EnumDisplay" />
+            <conv:StatusToneConverter x:Key="StatusTone" />
+            <conv:EnabledTextConverter x:Key="EnabledText" />
+            <conv:EnabledToneConverter x:Key="EnabledTone" />
+
+            <!-- ViewModel → View 映射：MainWindow 的 ContentControl 靠这些模板渲染页面。
+                 缺失时 WPF 会退化成 ToString()，界面上只会看到类名。 -->
+            <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+                <views:DashboardPage />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ModelListViewModel}">
+                <views:ModelListPage />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+                <views:SettingsPage />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:LogsViewModel}">
+                <views:LogsPage />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

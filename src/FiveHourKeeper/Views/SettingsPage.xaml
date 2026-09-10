@@ -1,0 +1,84 @@
+<UserControl x:Class="FiveHourKeeper.Views.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:m="clr-namespace:FiveHourKeeper.Models"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel MaxWidth="680" HorizontalAlignment="Left">
+            <TextBlock Text="设置" Style="{StaticResource TitleStyle}" />
+            <TextBlock Style="{StaticResource HintStyle}" Text="全局行为，保存后立即生效。" Margin="0,4,0,0" />
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Text="默认提示词" FontSize="14" FontWeight="500" Foreground="{StaticResource InkBrush}" />
+                    <TextBox AcceptsReturn="True" Height="110" Margin="0,8,0,0" Text="{Binding DefaultPrompt, UpdateSourceTrigger=PropertyChanged}"
+                             VerticalContentAlignment="Top" />
+                    <TextBlock Style="{StaticResource HintStyle}" Text="定时任务发送的真实请求内容；留空时回退为「仅回复1」。单个模型可在编辑弹窗中覆盖。" Margin="0,6,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="调度策略" FontSize="14" FontWeight="500" Foreground="{StaticResource InkBrush}" />
+
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="安全偏移（秒）" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Margin="12,4,0,4" Text="{Binding SafetyOffsetSeconds, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="宽容期（秒）" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Margin="12,4,0,4" Text="{Binding GracePeriodSeconds, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                    <TextBlock Style="{StaticResource HintStyle}" Text="安全偏移：在目标 − 5h 基础上再延迟的秒数，避免时钟误差。宽容期：错过发送时刻后仍允许补发的时间窗口。" Margin="0,8,0,0" />
+
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="错峰抖动上限（秒）" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Margin="12,4,0,4" Text="{Binding JitterMaxSeconds, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="网络超时（秒）" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Margin="12,4,0,4" Text="{Binding HttpTimeoutSeconds, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                    <TextBlock Style="{StaticResource HintStyle}" Text="提示：Claude Code 会把窗口起点取整到整点，建议目标刷新时刻使用整点以获得精确控制。" Margin="0,10,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="通知与系统集成" FontSize="14" FontWeight="500" Foreground="{StaticResource InkBrush}" />
+                    <StackPanel Margin="0,8,0,0">
+                        <CheckBox Content="发送成功后弹托盘通知" IsChecked="{Binding NotifyOnSuccess}" />
+                        <CheckBox Content="发送失败后弹托盘通知" IsChecked="{Binding NotifyOnFailure}" />
+                        <CheckBox Content="关闭窗口时最小化到托盘（而非退出）" IsChecked="{Binding MinimizeToTray}" />
+                        <CheckBox Content="开机自启（HKCU\Run）" IsChecked="{Binding AutoStart}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="时区" FontSize="14" FontWeight="500" Foreground="{StaticResource InkBrush}" />
+                    <TextBox Margin="0,8,0,0" Text="{Binding TimeZoneId, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource HintStyle}" Text="留空跟随系统。Windows 时区 ID，如 China Standard Time。" Margin="0,6,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Button Style="{StaticResource PrimaryButton}" Content="保存设置" Command="{Binding SaveCommand}"
+                    Margin="0,20,0,8" HorizontalAlignment="Left" Width="140" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,82 @@
+<UserControl x:Class="FiveHourKeeper.Views.DashboardPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="仪表盘" Style="{StaticResource TitleStyle}" />
+            <TextBlock Style="{StaticResource HintStyle}" Text="下一次发送倒计时与最近发送记录。发送时刻 = 目标 − 5 小时 + 安全偏移。" Margin="0,4,0,0" />
+        </StackPanel>
+
+        <Border Grid.Row="1" Margin="0,16,0,16" Padding="24" Style="{StaticResource CardStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="下一次发送" Style="{StaticResource HintStyle}" />
+                    <TextBlock Text="{Binding NextFireText}" FontSize="17" FontWeight="500"
+                               Foreground="{StaticResource InkBrush}" Margin="0,6,0,0" />
+                    <TextBlock Style="{StaticResource HintStyle}" Text="原则：目标时刻 − 5h + 安全偏移 = 实际发送时间；跨天自动处理。" Margin="0,6,0,0" />
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{Binding CountdownText}" FontSize="42" FontWeight="500"
+                           Foreground="{StaticResource PrimaryBrush}" VerticalAlignment="Center"
+                           FontFamily="Consolas, Microsoft YaHei UI" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Padding="16" Margin="0,0,8,0" Style="{StaticResource CardStyle}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="即将到来的计划" FontSize="14" FontWeight="500"
+                               Foreground="{StaticResource InkBrush}" Margin="0,0,0,10" />
+                    <DataGrid ItemsSource="{Binding Upcoming}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="模型" Binding="{Binding ModelName}" Width="*" />
+                            <DataGridTextColumn Header="类型" Binding="{Binding Kind}" Width="70" />
+                            <DataGridTextColumn Header="目标刷新" Binding="{Binding TargetLocal, StringFormat=MM-dd HH:mm}" Width="90" />
+                            <DataGridTextColumn Header="实际发送" Binding="{Binding SendLocal, StringFormat=MM-dd HH:mm}" Width="90" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="1" Padding="16" Margin="8,0,0,0" Style="{StaticResource CardStyle}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="最近发送记录" FontSize="14" FontWeight="500"
+                               Foreground="{StaticResource InkBrush}" Margin="0,0,0,10" />
+                    <DataGrid ItemsSource="{Binding Recent}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="时间" Binding="{Binding At, Converter={StaticResource LocalTime}, ConverterParameter=MM-dd HH:mm:ss}" Width="120" />
+                            <DataGridTextColumn Header="模型" Binding="{Binding ModelName}" Width="*" />
+                            <DataGridTextColumn Header="类型" Binding="{Binding Kind, Converter={StaticResource EnumDisplay}}" Width="60" />
+                            <DataGridTemplateColumn Header="状态" Width="76">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource BadgeStyle}" Width="60" HorizontalAlignment="Left">
+                                            <TextBlock Text="{Binding Status, Converter={StaticResource EnumDisplay}}"
+                                                       FontSize="12" HorizontalAlignment="Center"
+                                                       Foreground="{Binding Status, Converter={StaticResource StatusTone}}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="耗时" Binding="{Binding LatencyMs}" Width="56" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
