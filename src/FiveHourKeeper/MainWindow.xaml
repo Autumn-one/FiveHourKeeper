@@ -66,6 +66,14 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="NavAbout" TargetType="Button" BasedOn="{StaticResource NavButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CurrentPageName}" Value="关于">
+                    <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+                    <Setter Property="Foreground" Value="White" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -107,6 +115,7 @@
                     <Button Style="{StaticResource NavModels}" Content="模型" Click="OnNav" />
                     <Button Style="{StaticResource NavSettings}" Content="设置" Click="OnNav" />
                     <Button Style="{StaticResource NavLogs}" Content="日志" Click="OnNav" />
+                    <Button Style="{StaticResource NavAbout}" Content="关于" Click="OnNav" />
                 </StackPanel>
             </DockPanel>
         </Border>

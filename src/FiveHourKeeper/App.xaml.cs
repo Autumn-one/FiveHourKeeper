@@ -74,6 +74,7 @@ public partial class App : Application
                 services.AddSingleton<ModelListViewModel>();
                 services.AddSingleton<SettingsViewModel>();
                 services.AddSingleton<LogsViewModel>();
+                services.AddSingleton<AboutViewModel>();
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<IMainWindowAccess>(sp => sp.GetRequiredService<MainWindow>());
                 services.AddSingleton<TrayService>();
@@ -157,6 +158,13 @@ public partial class App : Application
             _ = new Views.ModelListPage();
             _ = new Views.SettingsPage();
             _ = new Views.LogsPage();
+            _ = new Views.AboutPage();
+
+            // 主壳窗口同样要实例化：导航栏的 StaticResource 只在运行期解析，
+            // 资源缺失时编译不报错、启动即 XamlParseException（已两次踩坑：
+            // BadgeStyle 缺失致模型页空白、NavAbout 缺失致启动无窗口）。
+            _ = new MainWindow();
+            _ = new Views.AboutPage();
 
             var editVm = new ViewModels.ModelEditViewModel(null, registry, clientFactory, configHolder)
             {

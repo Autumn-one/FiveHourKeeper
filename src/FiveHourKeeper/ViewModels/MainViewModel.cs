@@ -26,6 +26,7 @@ public sealed partial class MainViewModel : ObservableObject
     public ModelListViewModel ModelList { get; }
     public SettingsViewModel Settings { get; }
     public LogsViewModel Logs { get; }
+    public AboutViewModel About { get; }
 
     public MainViewModel(
         ConfigRootHolder config,
@@ -34,7 +35,8 @@ public sealed partial class MainViewModel : ObservableObject
         DashboardViewModel dashboard,
         ModelListViewModel modelList,
         SettingsViewModel settings,
-        LogsViewModel logs)
+        LogsViewModel logs,
+        AboutViewModel about)
     {
         _config = config;
         _store = store;
@@ -44,6 +46,7 @@ public sealed partial class MainViewModel : ObservableObject
         ModelList = modelList;
         Settings = settings;
         Logs = logs;
+        About = about;
 
         CurrentPage = Dashboard;
         RefreshPauseUi();
@@ -65,6 +68,7 @@ public sealed partial class MainViewModel : ObservableObject
             "模型" => ModelList,
             "设置" => Settings,
             "日志" => Logs,
+            "关于" => About,
             _ => Dashboard,
         };
     }
