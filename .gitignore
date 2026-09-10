@@ -7,6 +7,9 @@ obj/
 # 本地 NuGet 缓存（NuGet.config 重定向的 globalPackagesFolder）
 .nuget-packages/
 
+# 发布产物暂存目录（二进制不进仓库，走 GitHub Releases 分发）
+dist/
+
 # 工作区助手数据（.workbuddy）
 .workbuddy/
 
